@@ -1,0 +1,11 @@
+{
+  "name": "naukri-profile-automation",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "refresh": "node src/refresh-profile.js"
+  },
+  "dependencies": {
+    "playwright": "^1.55.0"
+  }
+}

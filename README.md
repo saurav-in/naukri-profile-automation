@@ -1,16 +1,21 @@
 # Naukri Profile Automation
 
-This project keeps the approved Naukri profile summary in one versioned place and documents the daily refresh workflow.
+This project keeps the approved Naukri profile summary in one versioned place and refreshes it through GitHub Actions.
 
 ## Approved profile summary
 
 The content to use is in `profile-summary.txt`.
 
-## Daily refresh
+## GitHub Actions refresh
 
-The Codex scheduled task runs at 9:00 AM IST every day. It opens the Naukri profile update flow, verifies that the saved summary still matches this file, and refreshes the profile only after the account is authenticated and the content remains accurate.
+The workflow in `.github/workflows/daily-naukri-refresh.yml` runs daily at 9:00 AM IST. It signs in, verifies that no OTP or CAPTCHA is required, then saves the summary from `profile-summary.txt`.
 
-Naukri may require a login, OTP, or CAPTCHA. Those steps must be completed manually; this project never stores credentials or bypasses account controls.
+Add these encrypted repository secrets before enabling the workflow:
+
+- `NAUKRI_EMAIL`
+- `NAUKRI_PASSWORD`
+
+The project never stores credentials in Git. Naukri may require an OTP or CAPTCHA; the workflow stops in that case and does not bypass account controls.
 
 ## Maintenance
 
