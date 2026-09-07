@@ -1,0 +1,1 @@
+Senior Java Backend Developer with 4+ years of experience building scalable enterprise applications, REST APIs, and microservices using Java, Spring Boot, Hibernate/JPA, SQL, Kafka, Docker, Kubernetes, and cloud platforms. Experienced in API design, data workflows, automated testing, production support, and delivering reliable solutions across distributed systems.
