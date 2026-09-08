@@ -14,51 +14,34 @@ const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage();
 
 try {
-  await page.goto("https://www.naukri.com/nlogin/login", {
-    waitUntil: "domcontentloaded",
-    timeout: 60000,
-  });
+  await page.goto("https://login.naukri.com/nLogin/Login.php", {
+  waitUntil: "domcontentloaded",
+  timeout: 60000,
+});
 
-  await page.waitForTimeout(3000);
+await page.waitForTimeout(3000);
 
-  console.log("Login URL:", page.url());
+console.log("Login URL:", page.url());
 
-  // Naukri has more than one login-page layout.
-  const emailField = page.locator(
-    "#usernameField, #emailTxt, input[name='USERNAME'], input[type='email'], input[placeholder*='Email' i], input[placeholder*='Username' i]"
-  ).first();
+await page.locator("#emailTxt, input[name='USERNAME']").first().fill(loginEmail);
 
-  const passwordField = page.locator(
-    "#passwordField, #pwd1, input[name='PASSWORD'], input[type='password'], input[placeholder*='Password' i]"
-  ).first();
+await page.locator("#pwd1, input[name='PASSWORD']").first().fill(loginPassword);
 
-  await emailField.waitFor({ state: "visible", timeout: 30000 });
-  await emailField.fill(loginEmail);
+await page.locator("#sbtLog, input[type='submit'], button[type='submit']").first().click();
 
-  await passwordField.waitFor({ state: "visible", timeout: 10000 });
-  await passwordField.fill(loginPassword);
+await page.waitForTimeout(5000);
 
-  // Handle both login-page button variants.
-  const loginButton = page.locator(
-    "#sbtLog, button:has-text('Login'), button:has-text('Sign in'), button[type='submit'], input[type='submit']"
-  ).first();
+console.log("After login URL:", page.url());
 
-  await loginButton.waitFor({ state: "visible", timeout: 10000 });
-  await loginButton.click();
+const pageText = await page.locator("body").innerText();
 
-  await page.waitForTimeout(5000);
+if (/captcha|one-time password|\botp\b|verification code/i.test(pageText)) {
+  throw new Error("Naukri requested OTP, CAPTCHA, or verification.");
+}
 
-  console.log("After login URL:", page.url());
-
-  const pageText = await page.locator("body").innerText();
-
-  if (/captcha|one-time password|\botp\b|verification code/i.test(pageText)) {
-    throw new Error("Naukri requested OTP, CAPTCHA, or verification.");
-  }
-
-  if (!/mnjuser/i.test(page.url())) {
-    throw new Error(`Naukri login failed. Current URL: ${page.url()}`);
-  }
+if (!/mnjuser/i.test(page.url())) {
+  throw new Error(`Naukri login failed. Current URL: ${page.url()}`);
+}
 
   console.log("Naukri login successful.");
 
